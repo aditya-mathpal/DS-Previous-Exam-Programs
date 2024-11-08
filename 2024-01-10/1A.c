@@ -2,6 +2,10 @@
 Solve the following problem of sorting the elements in a ragged array using a C program. Write a
 function called Create that accepts an integer pointer to pointer and an integer 'n' and creates a
 ragged array consisting of 'n' rows using dynamic memory allocation functions.
+
+Write a recursive function called Sort which accepts an integer pointer and an integer 'm' to sort
+each row of the ragged array. Write the main function to test the above two functions and to display
+the ragged array before and after sorting.
 */
 
 // solution:
@@ -21,25 +25,37 @@ int** Create(int** p, int n) {
             scanf("%d",&e);
             p[i][j] = e;
         }
-        for(int j=1;j<=num;j++) {
-            for(int k=j+1;k<=num;k++) {
-                if(p[i][j] > p[i][k]) {
-                    int temp = p[i][j];
-                    p[i][j] = p[i][k];
-                    p[i][k] = temp;
-                }
-            }
-        }
     }
     return p;
 }
 
-// testing
+int* Sort(int* p, int m) {
+    if(m<=1) return p;
+    int max = m;
+    for(int i=1;i<=m;i++) {
+        if(p[i]>p[max]) max = i;
+    }
+    if(max!=m) {
+        int temp = p[m];
+        p[m] = p[max];
+        p[max] = temp;
+    }
+    Sort(p,m-1);
+}
+
 int main() {
     int **p = NULL, n;
     printf("Enter number of rows: ");
     scanf("%d",&n);
     p = Create(p,n);
+    printf("The ragged array is:\n");
+    for(int i=0;i<n;i++) {
+        for(int j=1;j<=p[i][0];j++) {
+            printf("%5d",p[i][j]);
+        }
+        printf("\n");
+    }
+    for(int i=0;i<n;i++) p[i] = Sort(p[i],p[i][0]);
     printf("The sorted ragged array is:\n");
     for(int i=0;i<n;i++) {
         for(int j=1;j<=p[i][0];j++) {
@@ -61,6 +77,10 @@ Enter number of elements in row 2: 2
 Enter elements of row 2: 5 4
 Enter number of elements in row 3: 4
 Enter elements of row 3: 5 4 3 2
+The ragged array is:
+    3    1    2
+    5    4
+    5    4    3    2
 The sorted ragged array is:
     1    2    3
     4    5
